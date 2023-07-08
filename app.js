@@ -82,7 +82,7 @@ bot.start(async (ctx) => {
 
 bot.hears('Api', async (ctx) => {
     const userId = ctx.from.id;
-    const db = await connectToDatabase();
+    const db = app.locals.db;
     const users = db.collection('users');
     const user = await users.findOne({userId});
 
@@ -122,17 +122,18 @@ main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\n\n<b>For
 });
 
 bot.hears('🔙', async (ctx) => {
-    // Generate the keyboard markup
     const keyboardMarkup = {
         keyboard: [
             ['My Info', 'Contact'],
-            ['Redeem Code', 'Files'],
-            ['Buy Coins', 'Admin Panel'],
-            ['Rules']
+            ['Files'],
+            ['Pricing', 'Admin Panel'],
+            ['Api'],
+            ['Bot updates']
         ],
         resize_keyboard: true,
         one_time_keyboard: true,
     };
+
 
     // Send the welcome message with user information and buttons
     return ctx.replyWithHTML(`<b>Choose an option</b>`, {
@@ -462,7 +463,7 @@ async function instantDownload(userId, price, rawLink) {
         if (!verify.success) {
             throw new Error(verify.message);
         }
-        const result = await axios.get(`http://localhost:3000/api?apiKey=rpxXvLPjH3PKlt1wotd2&url=${rawLink}`)
+        const result = await axios.get(`https://main-server-v2-j73uk.ondigitalocean.app/api?apiKey=rpxXvLPjH3PKlt1wotd2&url=${rawLink}`)
         if (!result.data.success) {
             console.log(result.data);
             throw new Error(result.data.downloadLink);
