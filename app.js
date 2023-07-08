@@ -354,7 +354,7 @@ bot.on('text', async (ctx) => {
         const userId = ctx.from.id;
         const rawLink = ctx.message.text;
         if (!rawLink.includes('https://')) {
-            return ctx.replyWithHTML(`<b>This bot only works with links!</b>`, {reply_to_message_id: ctx.message.message_id});
+            return;
         }
         const pleasewait = await ctx.replyWithHTML('<b>Please wait while I process your request...</b>', {
             reply_to_message_id: ctx.message.message_id
