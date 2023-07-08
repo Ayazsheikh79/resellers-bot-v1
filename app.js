@@ -95,8 +95,8 @@ bot.hears('Api', async (ctx) => {
     if (!user.api) {
         const generateApi = await generateAPI();
         await users.updateOne({userId}, {$set: {api: generateApi}});
-        return ctx.replyWithHTML(`<b>Your API:</b>\n\n<code>${generateApi}</code>\n\n<code>API URL:
-main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\\n\\n<b>For more information, contact us using the contact button below.</b>\`,  {
+        return ctx.replyWithHTML(`<b>Your API:</b>\n<code>${generateApi}</code>\n\nAPI URL:
+<code>main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\\n\\n<b>For more information, contact us using the contact button below.</b>\`,  {
         reply_markup: {
             inline_keyboard: [
                 [
@@ -109,8 +109,8 @@ main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\\n\\n<b>F
         }}`);
     }
 
-    return ctx.replyWithHTML(`<b>Your API:</b>\n\n<code>${user.api}</code>\n\n<code>API URL:
-main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\n\n<b>For more information, contact us using the contact button below.</b>`,  {
+    return ctx.replyWithHTML(`<b>Your API:</b>\n<code>${user.api}</code>\n\nAPI URL:
+<code>main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\n\n<b>For more information, contact us using the contact button below.</b>`,  {
         reply_markup: {
             inline_keyboard: [
                 [
