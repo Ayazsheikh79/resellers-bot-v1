@@ -8,6 +8,11 @@ const {Markup} = require('telegraf');
 const files = require('./files');
 const generateRedeemCode = require('./generatecode');
 
+app.get('/health', (req, res) => {
+    res.sendStatus(200);
+});
+
+
 
 connectToDatabase()
     .then((db) => {
@@ -362,6 +367,11 @@ bot.on('text', async (ctx) => {
         }
     }
 )
+
+// Start the server
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
 
 // functions
 
