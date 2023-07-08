@@ -81,6 +81,8 @@ bot.start(async (ctx) => {
 });
 
 bot.hears('Api', async (ctx) => {
+    const contactLink = 'https://t.me/ayazsheikh079'
+    // ctx.answerCbQuery("checking...")
     const userId = ctx.from.id;
     const db = app.locals.db;
     const users = db.collection('users');
