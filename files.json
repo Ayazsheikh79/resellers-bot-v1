@@ -98,6 +98,24 @@
     "domain": "https://artlist.io/song/",
     "link": "All formats allowed"
   },
+  "Artlist Videos": {
+    "price": 0.20,
+    "delivery": "5 minutes to 2 hours",
+    "license": "Extended",
+    "types": "only videos (1080p to 4k HD resolution)",
+    "download": "manualDownload",
+    "domain": "https://artlist.io/stock-footage/",
+    "link": "All formats allowed"
+  },
+  "Artgrid Videos": {
+    "price": 0.20,
+    "delivery": "5 minutes to 2 hours",
+    "license": "Extended",
+    "types": "only videos (1080p to 4k HD resolution)",
+    "download": "manualDownload",
+    "domain": "https://artgrid.io/clip",
+    "link": "All formats allowed"
+  },
   "Creative Fabrica": {
     "price": 0.10,
     "delivery": "5 minutes to 2 hours",
@@ -186,6 +204,15 @@
     "types": "All types of files allowed",
     "download": "manualDownload",
     "domain": "https://www.stockunlimited.com/",
+    "link": "All formats allowed"
+  },
+  "Elegant Flyer": {
+    "price": 0.10,
+    "delivery": "5 minutes to 2 hours",
+    "license": "Extended",
+    "types": "All types of files allowed",
+    "download": "manualDownload",
+    "domain": "https://www.elegantflyer.com/",
     "link": "All formats allowed"
   }
 }
