@@ -12,7 +12,7 @@ app.get('/health', (req, res) => {
     res.sendStatus(200);
 });
 
-
+const contactLink = process.env.contactLink
 
 connectToDatabase()
     .then((db) => {
@@ -60,9 +60,7 @@ bot.start(async (ctx) => {
         keyboard: [
             ['My Info', 'Contact'],
             ['Files'],
-            ['Pricing', 'Admin Panel'],
-            ['Api'],
-            ['Bot updates']
+            ['Pricing', 'Bot updates']
         ],
         resize_keyboard: true,
         one_time_keyboard: true,
@@ -78,49 +76,6 @@ bot.start(async (ctx) => {
             reply_markup: keyboardMarkup
         }
     );
-});
-
-bot.hears('Api', async (ctx) => {
-    const contactLink = 'https://t.me/ayazsheikh079'
-    // ctx.answerCbQuery("checking...")
-    const userId = ctx.from.id;
-    const db = app.locals.db;
-    const users = db.collection('users');
-    const user = await users.findOne({userId});
-
-    if (!user) {
-        return ctx.replyWithHTML(`<b>You're not registered!</b>\n\n<code>Send /start to register</code>`);
-    }
-
-    if (!user.api) {
-        const generateApi = await generateAPI();
-        await users.updateOne({userId}, {$set: {api: generateApi}});
-        return ctx.replyWithHTML(`<b>Your API:</b>\n<code>${generateApi}</code>\n\nAPI URL:
-<code>main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\\n\\n<b>For more information, contact us using the contact button below.</b>\`,  {
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    {
-                        text: 'Contact 💬',
-                        url: contactLink
-                    }
-                ]
-            ]
-        }}`);
-    }
-
-    return ctx.replyWithHTML(`<b>Your API:</b>\n<code>${user.api}</code>\n\nAPI URL:
-<code>main-server-v2-j73uk.ondigitalocean.app?apiKey=[API]&url=[LINK]</code>\n\n<b>For more information, contact us using the contact button below.</b>`,  {
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    {
-                        text: 'Contact 💬',
-                        url: contactLink
-                    }
-                ]
-            ]
-        }});
 });
 
 bot.hears('🔙', async (ctx) => {
@@ -144,29 +99,6 @@ bot.hears('🔙', async (ctx) => {
     })
 });
 
-bot.hears('Admin Panel', async (ctx) => {
-    const userId = ctx.from.id;
-    const adminId = parseInt(process.env.admin);
-    if (userId !== adminId) {
-        return ctx.replyWithHTML(`<b>You're not an admin!</b>`)
-    }
-    // Generate the keyboard markup
-    const keyboardMarkup = {
-        keyboard: [
-            ['Add Contact Info'],
-            ['🔙']
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-    };
-
-    // Send the welcome message with user information and buttons
-    return ctx.replyWithHTML(`<b>Choose an option</b>`, {
-        reply_markup: keyboardMarkup,
-        reply_to_message_id: ctx.message.message_id
-    })
-});
-
 bot.hears('My Info', async (ctx) => {
     const userId = ctx.from.id;
     const db = await connectToDatabase();
@@ -179,7 +111,7 @@ bot.hears('My Info', async (ctx) => {
 });
 
 bot.hears('Pricing', async (ctx) => {
-    const contactLink = 'https://t.me/ayazsheikh079'
+
     ctx.replyWithHTML(`<b>Our Pricing:</b>\n\n<code>1 Coin = 1$ or ₹90</code>\n\n<b>Payment Methods:</b>\n<code>PayPal</code>\n<code>Binance</code>\n<code>UPI</code>\n\n<b>For Purchasing coins, contact us using the contact button below</b>`, {
         reply_markup: {
             inline_keyboard: [
@@ -255,18 +187,6 @@ bot.hears(Object.keys(files), async (ctx) => {
     );
 });
 
-// Callback query handler using bot.action for ping action
-bot.action(/ping_(\d+)_(\d+)/, async (ctx) => {
-    ctx.answerCbQuery('Pinging user...')
-    const {match, from} = ctx;
-    const [_, userId, uniqueId] = match;
-    const adminId = parseInt(process.env.admin);
-
-    if (from.id === adminId) {
-        // Ping the user by replying to the message
-        await ctx.telegram.sendMessage(userId, `Your file is ready for download!\n\nUnique ID: ${uniqueId}`);
-    }
-});
 
 bot.command('redeem', async (ctx) => {
     // Get the redeem code from the command arguments
@@ -330,7 +250,7 @@ bot.command('gen', async (ctx) => {
     }
     const coins = parseFloat(rawCoins).toFixed(2);
     const code = await generateRedeemCode(coins);
-    return await ctx.replyWithHTML(`<b>Successfully generated the redeem code:</b>\n\n<code>${code}</code>`);
+    return await ctx.replyWithHTML(`<b>Successfully generated the redeem code:</b>\n\n<b>Code: </b><code>${code}</code>\n<b>Coins:</b> <code>${coins}</code>\n\n<b>Redeem code by copy and paste this:</b>\n<code>/redeem ${code}</code>`);
 });
 
 // Create a broadcast command to braod cast messages among users
@@ -465,7 +385,7 @@ async function instantDownload(userId, price, rawLink) {
         if (!verify.success) {
             throw new Error(verify.message);
         }
-        const result = await axios.get(`https://main-server-v2-j73uk.ondigitalocean.app/api?apiKey=rpxXvLPjH3PKlt1wotd2&url=${rawLink}`)
+        const result = await axios.get(`https://main-server-v2-j73uk.ondigitalocean.app/api?apiKey=${apiKey}=${rawLink}`)
         if (!result.data.success) {
             console.log(result.data);
             throw new Error(result.data.downloadLink);
@@ -476,65 +396,10 @@ async function instantDownload(userId, price, rawLink) {
     }
 }
 
-async function manualDownload(userId, price, rawLink, ctx) {
-    const groupId = -1001936528325; // Replace with your group ID
-
-    try{
-        const verify = await coinsVerify(userId, price);
-        if (!verify.success) {
-            throw new Error(verify.message);
-        }
-        // Check if the message was received in a personal chat
-            // Generate a unique ID
-            const uniqueId = Date.now().toString();
-
-            // Modify the original message text by appending the unique ID
-            const forwardedText = `Message ID: ${uniqueId}\n\n${rawLink} \n\nYou'll be notified when your request is processed.`;
-
-            // Create inline keyboard with a button to ping the user
-            const inlineKeyboard = {
-                inline_keyboard: [
-                    [
-                        {
-                            text: 'Ping User',
-                            callback_data: `ping_${userId}_${uniqueId}`
-                        }
-                    ]
-                ]
-            };
-
-            // Forward the modified message to the group with inline keyboard
-            await ctx.telegram.sendMessage(groupId, forwardedText, {reply_markup: inlineKeyboard});
-
-            return{
-                success: true,
-                downloadLink: 'https://t.me/xbotsStock'
-            };
-
-    } catch (error) {
-        throw error;
-    }
-
-
-}
-
-async function outOfStock(userId, price, rawLink, ctx) {
+async function outOfStock(userId, price, rawLink) {
     return {
         success: false,
         downloadLink: 'Sorry, this item is out of stock. Please try again later.'
     }
 }
 
-async function generateAPI() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const codeLength = 20;
-    let apiKey = '';
-
-    for (let i = 0; i < codeLength; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        apiKey += characters[randomIndex];
-    }
-
-    // Return apiKey
-    return apiKey;
-}

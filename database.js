@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 // Replace the URL with your own MongoDB database URL
-const url = 'mongodb+srv://ayazsheikhdev:ayazsheikhdev@teamxstoremain.19rqiur.mongodb.net/';
+const url = process.env.dbUrl;
 
 // Function to connect to the database
 async function connectToDatabase() {
