@@ -83,9 +83,7 @@ bot.hears('🔙', async (ctx) => {
         keyboard: [
             ['My Info', 'Contact'],
             ['Files'],
-            ['Pricing', 'Admin Panel'],
-            ['Api'],
-            ['Bot updates']
+            ['Pricing', 'Bot updates']
         ],
         resize_keyboard: true,
         one_time_keyboard: true,
@@ -183,7 +181,7 @@ bot.hears(Object.keys(files), async (ctx) => {
     const {price, delivery, license, types, link} = files[selectedFile];
 
     const purchaseConfirmation = await ctx.replyWithHTML(
-        `<b>File Information:</b>\n<em>You have selected to buy a file from ${selectedFile} for the price of ${price / 100} coins.</em>\n\n<b>Details:</b>\n\n<code>-License Type: ${license}</code>\n<code>-Delivery: ${delivery}</code>\n\n<em><b>Please Note: <code>${types}</code></b></em>\n\n<b>❗Important❗</b>\n<b>link Format: ${link}</b>`
+        `<b>File Information:</b>\n<em>You have selected to buy a file from ${selectedFile} for the price of ${price} coins.</em>\n\n<b>Details:</b>\n\n<code>-License Type: ${license}</code>\n<code>-Delivery: ${delivery}</code>\n\n<em><b>Please Note: <code>${types}</code></b></em>\n\n<b>❗Important❗</b>\n<b>link Format: ${link}</b>`
     );
 });
 
@@ -385,7 +383,7 @@ async function instantDownload(userId, price, rawLink) {
         if (!verify.success) {
             throw new Error(verify.message);
         }
-        const result = await axios.get(`https://main-server-v2-j73uk.ondigitalocean.app/api?apiKey=${apiKey}=${rawLink}`)
+        const result = await axios.get(`https://main-server-v2-j73uk.ondigitalocean.app/api?apiKey=${process.env.apiKey}=${rawLink}`)
         if (!result.data.success) {
             console.log(result.data);
             throw new Error(result.data.downloadLink);
